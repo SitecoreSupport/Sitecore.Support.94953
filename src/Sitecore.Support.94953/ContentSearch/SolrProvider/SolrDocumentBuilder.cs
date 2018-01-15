@@ -11,6 +11,7 @@ using Sitecore.Diagnostics;
 using Sitecore.ContentSearch;
 using System.Collections.Generic;
 using Sitecore.Data;
+using System.Linq;
 
 namespace Sitecore.Support.ContentSearch.SolrProvider
 {
@@ -34,7 +35,13 @@ namespace Sitecore.Support.ContentSearch.SolrProvider
           this.Indexable.LoadAllFields();
         }
 
-        var processedFields = new HashSet<string>();
+        var loadedFields = new HashSet<string>(Indexable.Fields.Select(f => f.Id.ToString()));
+        var includedFields = new HashSet<string>();
+        if (this.Options.HasIncludedFields)
+        {
+          includedFields = new HashSet<string>(this.Options.IncludedFields);
+        }
+        includedFields.ExceptWith(loadedFields);
 
         if (IsParallel)
         {
@@ -44,7 +51,6 @@ namespace Sitecore.Support.ContentSearch.SolrProvider
           {
             try
             {
-              processedFields.Add(f.Id.ToString());
               this.CheckAndAddField(this.Indexable, f);
             }
             catch (Exception ex)
@@ -60,10 +66,6 @@ namespace Sitecore.Support.ContentSearch.SolrProvider
 
           if (!this.Options.IndexAllFields && this.Options.HasIncludedFields)
           {
-            var includedFields = new HashSet<string>(this.Options.IncludedFields);
-
-            includedFields.ExceptWith(processedFields);
-
             this.ParallelForeachProxy.ForEach(includedFields, this.ParallelOptions, fieldId =>
             {
               try
@@ -89,16 +91,11 @@ namespace Sitecore.Support.ContentSearch.SolrProvider
         {
           foreach (var field in this.Indexable.Fields)
           {
-            processedFields.Add(field.Id.ToString());
             this.CheckAndAddField(this.Indexable, field);
           }
 
           if (!this.Options.IndexAllFields && this.Options.HasIncludedFields)
           {
-            var includedFields = new HashSet<string>(this.Options.IncludedFields);
-
-            includedFields.ExceptWith(processedFields);
-
             foreach (var fieldId in includedFields)
             {
               ID id;
