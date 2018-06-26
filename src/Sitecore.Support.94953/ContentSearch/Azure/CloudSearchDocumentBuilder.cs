@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-
-using Sitecore.ContentSearch.Diagnostics;
-using Sitecore.ContentSearch.Utilities;
-using Sitecore.Data.Items;
-using Sitecore.Data.LanguageFallback;
-using Sitecore.Data.Managers;
-using Sitecore.Diagnostics;
 using Sitecore.ContentSearch;
 
-namespace Sitecore.Support.ContentSearch.SolrProvider
+namespace Sitecore.Support.ContentSearch.Azure
 {
-  public class SolrDocumentBuilder : Sitecore.ContentSearch.SolrProvider.SolrDocumentBuilder
+  public class CloudSearchDocumentBuilder : Sitecore.ContentSearch.Azure.CloudSearchDocumentBuilder
   {
 
-    public SolrDocumentBuilder(IIndexable indexable, IProviderUpdateContext context) : base(indexable, context)
+    public CloudSearchDocumentBuilder(IIndexable indexable, IProviderUpdateContext context) : base(indexable, context)
     {
 
     }
