@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using Sitecore.ContentSearch;
 
 namespace Sitecore.Support.ContentSearch.Azure
 {
+  using System;
+  using System.Collections.Concurrent;
+  using Sitecore.ContentSearch;
   public class CloudSearchDocumentBuilder : Sitecore.ContentSearch.Azure.CloudSearchDocumentBuilder
   {
 
