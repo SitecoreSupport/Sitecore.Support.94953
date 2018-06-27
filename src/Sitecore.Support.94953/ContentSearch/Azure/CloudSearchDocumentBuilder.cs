@@ -12,6 +12,18 @@ namespace Sitecore.Support.ContentSearch.Azure
 
     }
 
+    protected override void AddField(IIndexableDataField field)
+    {
+      if (field.Name.IsNullOrEmpty())
+      {
+        CrawlingLog.Log.Warn("[Index={0}] '{1}' field of '{2}' item is skipped: the field name is missed."
+          .FormatWith(this.Index.Name, field.Id, this.Indexable.Id));
+
+        return;
+      }
+
+      base.AddField(field);
+    }
 
     protected override void AddItemFields()
     {
