@@ -85,7 +85,44 @@ namespace Sitecore.Support.ContentSearch.Azure
 
     protected virtual void AddItemFieldsByIncludeList()
     {
-      
+      if (IsParallel)
+      {
+        var exceptions = new ConcurrentQueue<Exception>();
+
+        this.ParallelForeachProxy.ForEach(this.Options.IncludedFields, this.ParallelOptions, fieldKey =>
+        {
+          try
+          {
+            var field = this.Indexable.GetFieldByKey(fieldKey);
+
+            if (field != null)
+            {
+              this.CheckAndAddField(this.Indexable, field);
+            }
+          }
+          catch (Exception ex)
+          {
+            exceptions.Enqueue(ex);
+          }
+        });
+
+        if (exceptions.Count > 0)
+        {
+          throw new AggregateException(exceptions);
+        }
+      }
+      else
+      {
+        foreach (string fieldKey in this.Options.IncludedFields)
+        {
+          var field = this.Indexable.GetFieldByKey(fieldKey);
+
+          if (field != null)
+          {
+            this.CheckAndAddField(this.Indexable, field);
+          }
+        }
+      }
     }
   }
 }
