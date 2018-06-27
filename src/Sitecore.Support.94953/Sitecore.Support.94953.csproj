@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentSearch\Azure\CloudSearchDocumentBuilder.cs" />
+    <Compile Include="ContentSearch\IIndexableExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
