@@ -4,6 +4,9 @@ namespace Sitecore.Support.ContentSearch.Azure
   using System;
   using System.Collections.Concurrent;
   using Sitecore.ContentSearch;
+  using Sitecore.ContentSearch.Diagnostics;
+  using StringExtensions;
+
   public class CloudSearchDocumentBuilder : Sitecore.ContentSearch.Azure.CloudSearchDocumentBuilder
   {
 
@@ -39,7 +42,8 @@ namespace Sitecore.Support.ContentSearch.Azure
         if (IsParallel)
         {
           var exceptions = new ConcurrentQueue<Exception>();
-          Parallel.ForEach(this.Indexable.Fields, this.ParallelOptions, f =>
+
+          this.ParallelForeachProxy.ForEach(this.Indexable.Fields, this.ParallelOptions, f =>
           {
             try
             {
