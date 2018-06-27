@@ -36,42 +36,27 @@ namespace Sitecore.Support.ContentSearch.Azure
 
         if (this.Options.IndexAllFields)
         {
-          this.Indexable.LoadAllFields();
-        }
-
-        if (IsParallel)
-        {
-          var exceptions = new ConcurrentQueue<Exception>();
-
-          this.ParallelForeachProxy.ForEach(this.Indexable.Fields, this.ParallelOptions, f =>
-          {
-            try
-            {
-              this.CheckAndAddField(this.Indexable, f);
-            }
-            catch (Exception ex)
-            {
-              exceptions.Enqueue(ex);
-            }
-          });
-
-          if (exceptions.Count > 0)
-          {
-            throw new AggregateException(exceptions);
-          }
+          this.AddItemFieldsByItemList();
         }
         else
         {
-          foreach (var field in this.Indexable.Fields)
-          {
-            this.CheckAndAddField(this.Indexable, field);
-          }
+          this.AddItemFieldsByIncludeList();
         }
       }
       finally
       {
         VerboseLogging.CrawlingLogDebug(() => "AddItemFields End");
       }
+    }
+
+    protected virtual void AddItemFieldsByItemList()
+    {
+
+    }
+
+    protected virtual void AddItemFieldsByIncludeList()
+    {
+      
     }
   }
 }
