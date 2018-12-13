@@ -40,7 +40,36 @@ namespace Sitecore.Support.ContentSearch.SolrProvider
 
     protected virtual void AddItemFieldsByItemList()
     {
+      this.Indexable.LoadAllFields();
 
+      if (IsParallel)
+      {
+        var exceptions = new ConcurrentQueue<Exception>();
+
+        this.ParallelForeachProxy.ForEach(this.Indexable.Fields, this.ParallelOptions, f =>
+        {
+          try
+          {
+            this.CheckAndAddField(this.Indexable, f);
+          }
+          catch (Exception ex)
+          {
+            exceptions.Enqueue(ex);
+          }
+        });
+
+        if (exceptions.Count > 0)
+        {
+          throw new AggregateException(exceptions);
+        }
+      }
+      else
+      {
+        foreach (var field in this.Indexable.Fields)
+        {
+          this.CheckAndAddField(this.Indexable, field);
+        }
+      }
     }
 
     protected virtual void AddItemFieldsByIncludeList()
