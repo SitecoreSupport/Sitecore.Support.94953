@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using Sitecore.ContentSearch.Diagnostics;
 using Sitecore.Data.LanguageFallback;
 using Sitecore.ContentSearch;
+using Sitecore.StringExtensions;
 
 namespace Sitecore.Support.ContentSearch.SolrProvider
 {
@@ -60,6 +61,18 @@ namespace Sitecore.Support.ContentSearch.SolrProvider
       {
         VerboseLogging.CrawlingLogDebug(() => "AddItemFields End");
       }
+    }
+
+    public override void AddField(IIndexableDataField field)
+    {
+      if (field.Name.IsNullOrEmpty())
+      {
+        CrawlingLog.Log.Warn("[Index={0}] '{1}' field of '{2}' item is skipped: the field name is missed."
+          .FormatWith(this.Index.Name, field.Id, this.Indexable.Id));
+        return;
+      }
+
+      base.AddField(field);
     }
 
     private void CheckAndAddField(IIndexable indexable, IIndexableDataField field)
